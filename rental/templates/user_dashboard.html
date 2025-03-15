@@ -1,0 +1,39 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard</title>
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+</head>
+<body>
+    <header>
+        <h2>Welcome, {{ user.full_name }}</h2>
+        <a href="/logout/">Logout</a>
+    </header>
+
+    <section class="car-list">
+        <h3>Available Cars</h3>
+        <div class="cars">
+            {% for car in cars %}
+            <div class="car-card">
+                <h4>{{ car.name }} ({{ car.company }})</h4>
+                <p>Number Plate: {{ car.number_plate }}</p>
+                <p>Rate: ₹{{ car.rate_hourly }}/hour, ₹{{ car.rate_daywise }}/day</p>
+                <p>Status: <strong>{{ car.status }}</strong></p>
+                <button onclick="bookCar('{{ car.id }}')">Book Now</button>
+            </div>
+            {% empty %}
+            <p>No cars available at the moment.</p>
+            {% endfor %}
+        </div>
+    </section>
+
+    <script>
+        function bookCar(carId) {
+            alert("Car " + carId + " booked successfully! (Fake Payment)");
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,53 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Car Owner Dashboard</title>
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+</head>
+<body>
+    <header>
+        <h2>Welcome, Car Owner</h2>
+        <a href="/logout/">Logout</a>
+    </header>
+
+    <section class="add-car">
+        <h3>Add a New Car</h3>
+        <form method="post" action="/add_car/">
+            {% csrf_token %}
+            <input type="text" name="name" placeholder="Car Name" required>
+            <input type="text" name="company" placeholder="Company" required>
+            <input type="text" name="number_plate" placeholder="Number Plate" required>
+            <input type="number" name="rate_hourly" placeholder="Rate per Hour" required>
+            <input type="number" name="rate_daywise" placeholder="Rate per Day" required>
+            <select name="with_driver">
+                <option value="Yes">With Driver</option>
+                <option value="No">Without Driver</option>
+            </select>
+            <button type="submit">Add Car</button>
+        </form>
+    </section>
+
+    <section class="car-list">
+        <h3>Your Cars</h3>
+        <div class="cars">
+            {% for car in owner_cars %}
+            <div class="car-card">
+                <h4>{{ car.name }} ({{ car.company }})</h4>
+                <p>Number Plate: {{ car.number_plate }}</p>
+                <p>Rate: ₹{{ car.rate_hourly }}/hour, ₹{{ car.rate_daywise }}/day</p>
+                <p>Status: <strong>{{ car.status }}</strong></p>
+                <form method="post" action="/remove_car/{{ car.id }}/">
+                    {% csrf_token %}
+                    <button type="submit" class="remove-btn">Remove</button>
+                </form>
+            </div>
+            {% empty %}
+            <p>You haven't added any cars yet.</p>
+            {% endfor %}
+        </div>
+    </section>
+</body>
+</html>
