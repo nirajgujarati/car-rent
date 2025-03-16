@@ -20,7 +20,8 @@
             <div class="car-card">
                 <h4>{{ car.name }} ({{ car.company }})</h4>
                 <p>Number Plate: {{ car.number_plate }}</p>
-                <p>Rate: ₹{{ car.rate_hourly }}/hour, ₹{{ car.rate_daywise }}/day</p>
+                <p>Rate: ₹{{ car.hourly_rate }}/hour, ₹{{ car.daily_rate }}/day</p>
+
                 <p>Status: <strong>{{ car.status }}</strong></p>
                 <button onclick="bookCar('{{ car.id }}')">Book Now</button>
             </div>

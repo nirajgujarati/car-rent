@@ -28,15 +28,16 @@ class CarOwner(models.Model):
 
 
 class Car(models.Model):
-    owner = models.ForeignKey(CarOwner, on_delete=models.CASCADE)  # Each car belongs to a car owner
+    owner = models.ForeignKey(CarOwner, on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
     company = models.CharField(max_length=100)
     number_plate = models.CharField(max_length=20, unique=True)
-    hourly_rate = models.DecimalField(max_digits=6, decimal_places=2)
-    daily_rate = models.DecimalField(max_digits=6, decimal_places=2)
+    hourly_rate = models.DecimalField(max_digits=6, decimal_places=2)  # <-- Ensure this field exists
+    daily_rate = models.DecimalField(max_digits=6, decimal_places=2)  # <-- Ensure this field exists
     with_driver = models.BooleanField(default=False)
     status = models.CharField(max_length=10, choices=[('Available', 'Available'), ('Booked', 'Booked')], default='Available')
     created_at = models.DateTimeField(auto_now_add=True)
+
 
     def __str__(self):
         return f"{self.name} - {self.number_plate}"

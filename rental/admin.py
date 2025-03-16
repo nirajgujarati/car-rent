@@ -15,12 +15,17 @@ class CarOwnerAdmin(admin.ModelAdmin):
     list_display = ("username", "password", "created_at")  # Display only relevant fields
     search_fields = ("username",)
 
-# # Register Car Model
-# @admin.register(Car)
-# class CarAdmin(admin.ModelAdmin):
-#     list_display = ("number_plate", "name", "company", "rate_per_hour", "rate_per_day", "is_available")
-#     search_fields = ("number_plate", "name", "company")
-#     list_filter = ("is_available",)
+
+from django.contrib import admin
+from .models import Car
+
+@admin.register(Car)
+class CarAdmin(admin.ModelAdmin):
+    list_display = ("name", "company", "number_plate", "hourly_rate", "daily_rate", "with_driver", "status", "created_at")
+    search_fields = ("name", "company", "number_plate")
+    list_filter = ("status", "with_driver", "company")
+    ordering = ("-created_at",)
+
 
 # # Register Booking Model
 # @admin.register(Booking)

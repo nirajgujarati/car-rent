@@ -37,12 +37,16 @@
             <div class="car-card">
                 <h4>{{ car.name }} ({{ car.company }})</h4>
                 <p>Number Plate: {{ car.number_plate }}</p>
-                <p>Rate: ₹{{ car.rate_hourly }}/hour, ₹{{ car.rate_daywise }}/day</p>
+                <p>Rate: ₹{{ car.hourly_rate }}/hour, ₹{{ car.daily_rate }}/day</p>
+
                 <p>Status: <strong>{{ car.status }}</strong></p>
-                <form method="post" action="/remove_car/{{ car.id }}/">
+                <!-- <form method="post" action="{% url 'remove_car' car.id %}">
                     {% csrf_token %}
                     <button type="submit" class="remove-btn">Remove</button>
-                </form>
+                </form> -->
+                
+                
+                
             </div>
             {% empty %}
             <p>You haven't added any cars yet.</p>

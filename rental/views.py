@@ -124,3 +124,94 @@ def car_owner_dashboard(request):
     
     return render(request, "owner_dashboard.html", {"car_owner": car_owner, "owner_cars": owner_cars})
 
+
+
+
+
+
+
+
+
+
+def add_car(request):
+    """Handle adding a new car for the logged-in car owner."""
+    if request.method == "POST":
+        try:
+            car_owner = CarOwner.objects.get(id=request.session.get("car_owner_id"))
+        except CarOwner.DoesNotExist:
+            return redirect("login")  # Redirect if car owner not found
+
+        name = request.POST.get("name")
+        company = request.POST.get("company")
+        number_plate = request.POST.get("number_plate")
+        rate_hourly = request.POST.get("rate_hourly")
+        rate_daywise = request.POST.get("rate_daywise")
+        with_driver = request.POST.get("with_driver") == "Yes"  # Convert to boolean
+
+        # Create new car entry
+        Car.objects.create(
+            owner=car_owner,
+            name=name,
+            company=company,
+            number_plate=number_plate,
+            hourly_rate=rate_hourly,
+            daily_rate=rate_daywise,
+            with_driver=with_driver
+        )
+
+        return redirect("car_owner_dashboard")  # Redirect after adding
+
+    return redirect("car_owner_dashboard")
+
+from django.shortcuts import get_object_or_404, redirect
+from django.contrib.auth.decorators import login_required
+from .models import Car
+
+@login_required
+def remove_car(request, car_id):
+    car = get_object_or_404(Car, id=car_id)
+
+    # Check if the logged-in user is the owner of the car
+    if car.owner == request.user:
+        car.delete()
+    
+    return redirect('car_owner_dashboard')  # Redirect back to the dashboard
+
+
+def list_cars(request):
+    if 'car_owner_id' not in request.session:
+        return redirect('login')
+
+    owner = CarOwner.objects.get(id=request.session['car_owner_id'])
+    cars = Car.objects.filter(owner=owner)
+
+    # Filtering by status
+    status_filter = request.GET.get('status', '')
+    if status_filter:
+        cars = cars.filter(status=status_filter)
+
+    return render(request, "list_cars.html", {"cars": cars})
+
+
+def view_available_cars(request):
+    cars = Car.objects.filter(status='Available')
+    return render(request, "view_available_cars.html", {"cars": cars})
+
+
+def book_car(request, car_id):
+    if 'user_id' not in request.session:
+        return redirect('login')
+
+    car = Car.objects.get(id=car_id)
+    if car.status == 'Booked':
+        return redirect('view_available_cars')
+
+    if request.method == "POST":
+        # Fake payment logic
+        payment_success = True  # Assume payment is successful
+        if payment_success:
+            car.status = 'Booked'
+            car.save()
+            return redirect('user_dashboard')
+
+    return render(request, "book_car.html", {"car": car})
