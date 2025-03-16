@@ -37,6 +37,7 @@ class Car(models.Model):
     with_driver = models.BooleanField(default=False)
     status = models.CharField(max_length=10, choices=[('Available', 'Available'), ('Booked', 'Booked')], default='Available')
     created_at = models.DateTimeField(auto_now_add=True)
+    image = models.ImageField(upload_to='car_images/', null=True, blank=True)  # Car image
 
 
     def __str__(self):

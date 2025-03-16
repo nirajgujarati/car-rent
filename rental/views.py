@@ -131,24 +131,23 @@ def car_owner_dashboard(request):
 
 
 
-
-
 def add_car(request):
-    """Handle adding a new car for the logged-in car owner."""
     if request.method == "POST":
         try:
             car_owner = CarOwner.objects.get(id=request.session.get("car_owner_id"))
         except CarOwner.DoesNotExist:
-            return redirect("login")  # Redirect if car owner not found
+            return redirect("login")
 
         name = request.POST.get("name")
         company = request.POST.get("company")
         number_plate = request.POST.get("number_plate")
         rate_hourly = request.POST.get("rate_hourly")
         rate_daywise = request.POST.get("rate_daywise")
-        with_driver = request.POST.get("with_driver") == "Yes"  # Convert to boolean
+        with_driver = request.POST.get("with_driver") == "Yes"
+        image = request.FILES.get("image")  # Get the uploaded image
 
-        # Create new car entry
+        print("Uploaded image:", image)  # Debugging: Print the image object
+
         Car.objects.create(
             owner=car_owner,
             name=name,
@@ -156,26 +155,15 @@ def add_car(request):
             number_plate=number_plate,
             hourly_rate=rate_hourly,
             daily_rate=rate_daywise,
-            with_driver=with_driver
+            with_driver=with_driver,
+            image=image  # Add the image to the car entry
         )
 
-        return redirect("car_owner_dashboard")  # Redirect after adding
+        return redirect("car_owner_dashboard")
 
     return redirect("car_owner_dashboard")
 
-from django.shortcuts import get_object_or_404, redirect
-from django.contrib.auth.decorators import login_required
-from .models import Car
 
-@login_required
-def remove_car(request, car_id):
-    car = get_object_or_404(Car, id=car_id)
-
-    # Check if the logged-in user is the owner of the car
-    if car.owner == request.user:
-        car.delete()
-    
-    return redirect('car_owner_dashboard')  # Redirect back to the dashboard
 
 
 def list_cars(request):
@@ -215,3 +203,6 @@ def book_car(request, car_id):
             return redirect('user_dashboard')
 
     return render(request, "book_car.html", {"car": car})
+
+
+
