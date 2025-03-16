@@ -4,30 +4,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Dashboard</title>
+    <title>Car Rental Dashboard</title>
     <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 </head>
 <body>
 
     <!-- Navigation Bar -->
     <nav class="navbar">
         <div class="logo">
+            <img src="{% static 'images/logo.jpg' %}" alt="CarRent">
             <h1>CarRent</h1>
         </div>
-        <div class="user-info">
-            <span>Welcome, {{ user.full_name }}</span>
-            <button class="drawer-toggle" onclick="toggleDrawer()">☰</button>
+        <div class="user-panel">
+            <span class="username">Hello, {{ user.full_name }}</span>
+            <div class="profile">
+                <img src="{% static 'images/profile.jpeg' %}" alt="Profile">
+                <ul class="dropdown-menu">
+                    <li><a href="#">Profile</a></li>
+                    <li><a href="/logout/">Logout</a></li>
+                </ul>
+            </div>
         </div>
     </nav>
 
-    <!-- Drawer for logout option -->
-    <div id="drawer" class="drawer">
-        <a href="/logout/" class="logout-btn">Logout</a>
-    </div>
+    <!-- Hero Section -->
+    <header class="hero">
+        <h1>Find Your Dream Ride</h1>
+        <p>Choose from a variety of luxury and budget-friendly cars.</p>
+    </header>
 
     <!-- Car List Section -->
     <section class="car-list">
-        <h3>Available Cars</h3>
+        <h2>Available Cars</h2>
         <div class="car-grid">
             {% for car in cars %}
             <div class="car-card">
@@ -35,32 +44,30 @@
                     {% if car.image %}
                         <img src="{{ car.image.url }}" alt="{{ car.name }}">
                     {% else %}
-                        <img src="{% static 'images/default_car_image.jpg' %}" alt="Default Car Image">
+                        <img src="{% static 'images/default_car.jpg' %}" alt="Default Car Image">
                     {% endif %}
                 </div>
                 <div class="car-details">
-                    <h4>{{ car.name }} ({{ car.company }})</h4>
-                    <p>Number Plate: {{ car.number_plate }}</p>
-                    <p>Rate: ₹{{ car.hourly_rate }}/hour, ₹{{ car.daily_rate }}/day</p>
-                    <p>Status: <strong>{{ car.status }}</strong></p>
-                    <button onclick="bookCar('{{ car.id }}')" class="book-now-btn">Book Now</button>
+                    <h4>{{ car.name }} <span>({{ car.company }})</span></h4>
+                    <p>Plate: <strong>{{ car.number_plate }}</strong></p>
+                    <p>Rate: ₹{{ car.hourly_rate }}/hr | ₹{{ car.daily_rate }}/day</p>
+                    <p>Status: <span class="status {{ car.status|lower }}">{{ car.status }}</span></p>
+                    <button class="book-btn">Book Now</button>
                 </div>
             </div>
             {% empty %}
-            <p>No cars available at the moment.</p>
+            <p class="no-cars">No cars available at the moment.</p>
             {% endfor %}
         </div>
     </section>
 
     <script>
-        function bookCar(carId) {
-            alert("Car " + carId + " booked successfully! (Fake Payment)");
-        }
-
-        function toggleDrawer() {
-            const drawer = document.getElementById('drawer');
-            drawer.classList.toggle('open');
-        }
+        document.querySelectorAll('.profile').forEach(profile => {
+            profile.addEventListener('click', () => {
+                profile.querySelector('.dropdown-menu').classList.toggle('show');
+            });
+        });
     </script>
+
 </body>
 </html>
