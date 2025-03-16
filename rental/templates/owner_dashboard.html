@@ -4,54 +4,66 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Car Owner Dashboard</title>
+    <title>User Dashboard</title>
     <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    <header>
-        <h2>Welcome, Car Owner</h2>
-        <a href="/logout/">Logout</a>
-    </header>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="navbar-left">
+            <img src="{% static 'images/logo.png' %}" alt="Logo" class="logo">
+            <span class="brand-name">Car Rental</span>
+        </div>
+        <div class="navbar-right">
+            <span class="welcome-message">Welcome, {{ user.full_name }}</span>
+            <div class="dropdown">
+                <button class="dropbtn"><i class="fas fa-user"></i></button>
+                <div class="dropdown-content">
+                    <a href="/logout/">Logout</a>
+                </div>
+            </div>
+        </div>
+    </nav>
 
-    <section class="add-car">
-        <h3>Add a New Car</h3>
-        <form method="post" action="/add_car/">
-            {% csrf_token %}
-            <input type="text" name="name" placeholder="Car Name" required>
-            <input type="text" name="company" placeholder="Company" required>
-            <input type="text" name="number_plate" placeholder="Number Plate" required>
-            <input type="number" name="rate_hourly" placeholder="Rate per Hour" required>
-            <input type="number" name="rate_daywise" placeholder="Rate per Day" required>
-            <select name="with_driver">
-                <option value="Yes">With Driver</option>
-                <option value="No">Without Driver</option>
-            </select>
-            <button type="submit">Add Car</button>
-        </form>
-    </section>
-
+    <!-- Car List Section -->
     <section class="car-list">
-        <h3>Your Cars</h3>
-        <div class="cars">
-            {% for car in owner_cars %}
+        <h3>Available Cars</h3>
+        <div class="cars-grid">
+            {% for car in cars %}
             <div class="car-card">
-                <h4>{{ car.name }} ({{ car.company }})</h4>
-                <p>Number Plate: {{ car.number_plate }}</p>
-                <p>Rate: ₹{{ car.hourly_rate }}/hour, ₹{{ car.daily_rate }}/day</p>
+                <!-- Car Image -->
+                <div class="car-image">
+                    {% if car.image %}
+                        <img src="{{ car.image.url }}" alt="{{ car.name }}">
+                    {% else %}
+                        <img src="{% static 'images/default_car_image.jpg' %}" alt="Default Car Image">
+                    {% endif %}
+                </div>
 
-                <p>Status: <strong>{{ car.status }}</strong></p>
-                <!-- <form method="post" action="{% url 'remove_car' car.id %}">
-                    {% csrf_token %}
-                    <button type="submit" class="remove-btn">Remove</button>
-                </form> -->
-                
-                
-                
+                <!-- Car Details -->
+                <div class="car-details">
+                    <h4>{{ car.name }} ({{ car.company }})</h4>
+                    <p>Number Plate: {{ car.number_plate }}</p>
+                    <p>Rate: ₹{{ car.hourly_rate }}/hour, ₹{{ car.daily_rate }}/day</p>
+                    <p>Status: <strong>{{ car.status }}</strong></p>
+                </div>
+
+                <!-- Book Now Button -->
+                <div class="book-now">
+                    <button onclick="bookCar('{{ car.id }}')">Book Now</button>
+                </div>
             </div>
             {% empty %}
-            <p>You haven't added any cars yet.</p>
+            <p>No cars available at the moment.</p>
             {% endfor %}
         </div>
     </section>
+
+    <script>
+        function bookCar(carId) {
+            alert("Car " + carId + " booked successfully! (Fake Payment)");
+        }
+    </script>
 </body>
 </html>

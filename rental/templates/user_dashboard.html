@@ -8,22 +8,43 @@
     <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
 </head>
 <body>
-    <header>
-        <h2>Welcome, {{ user.full_name }}</h2>
-        <a href="/logout/">Logout</a>
-    </header>
 
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="logo">
+            <h1>CarRent</h1>
+        </div>
+        <div class="user-info">
+            <span>Welcome, {{ user.full_name }}</span>
+            <button class="drawer-toggle" onclick="toggleDrawer()">☰</button>
+        </div>
+    </nav>
+
+    <!-- Drawer for logout option -->
+    <div id="drawer" class="drawer">
+        <a href="/logout/" class="logout-btn">Logout</a>
+    </div>
+
+    <!-- Car List Section -->
     <section class="car-list">
         <h3>Available Cars</h3>
-        <div class="cars">
+        <div class="car-grid">
             {% for car in cars %}
             <div class="car-card">
-                <h4>{{ car.name }} ({{ car.company }})</h4>
-                <p>Number Plate: {{ car.number_plate }}</p>
-                <p>Rate: ₹{{ car.hourly_rate }}/hour, ₹{{ car.daily_rate }}/day</p>
-
-                <p>Status: <strong>{{ car.status }}</strong></p>
-                <button onclick="bookCar('{{ car.id }}')">Book Now</button>
+                <div class="car-image">
+                    {% if car.image %}
+                        <img src="{{ car.image.url }}" alt="{{ car.name }}">
+                    {% else %}
+                        <img src="{% static 'images/default_car_image.jpg' %}" alt="Default Car Image">
+                    {% endif %}
+                </div>
+                <div class="car-details">
+                    <h4>{{ car.name }} ({{ car.company }})</h4>
+                    <p>Number Plate: {{ car.number_plate }}</p>
+                    <p>Rate: ₹{{ car.hourly_rate }}/hour, ₹{{ car.daily_rate }}/day</p>
+                    <p>Status: <strong>{{ car.status }}</strong></p>
+                    <button onclick="bookCar('{{ car.id }}')" class="book-now-btn">Book Now</button>
+                </div>
             </div>
             {% empty %}
             <p>No cars available at the moment.</p>
@@ -34,6 +55,11 @@
     <script>
         function bookCar(carId) {
             alert("Car " + carId + " booked successfully! (Fake Payment)");
+        }
+
+        function toggleDrawer() {
+            const drawer = document.getElementById('drawer');
+            drawer.classList.toggle('open');
         }
     </script>
 </body>
